@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="Trangchu">
      <widget class="QWidget" name="gridLayoutWidget">
@@ -223,6 +223,13 @@
           <widget class="QPushButton" name="pushButton_sua">
            <property name="text">
             <string>Sửa </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_lammoi">
+           <property name="text">
+            <string>Làm mới</string>
            </property>
           </widget>
          </item>
@@ -531,6 +538,20 @@
           <widget class="QPushButton" name="pushButton_huydon">
            <property name="text">
             <string>Hủy đơn</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_themdon">
+           <property name="text">
+            <string>Thêm đơn mới</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_lammoi_2">
+           <property name="text">
+            <string>Làm mới</string>
            </property>
           </widget>
          </item>
@@ -1079,7 +1100,7 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_4">
+    <widget class="QWidget" name="page_nhat_ky">
      <widget class="QWidget" name="gridLayoutWidget_10">
       <property name="geometry">
        <rect>
@@ -1204,7 +1225,7 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="page">
+    <widget class="QWidget" name="page_tai_khoan">
      <widget class="QWidget" name="gridLayoutWidget_11">
       <property name="geometry">
        <rect>
