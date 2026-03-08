@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 
 class RefundLogic:
 
-    VALID_BOOKING_STATUS_FOR_REFUND = "PAID"
+    # Trạng thái booking cho phép hoàn tiền: đã thanh toán (Confirmed)
+    VALID_BOOKING_STATUS_FOR_REFUND = "Confirmed"
 
     def __init__(self):
         self.logger = AdminLogger()
@@ -45,23 +46,17 @@ class RefundLogic:
         return result["earliest_time"] if result else None
 
     def _parse_datetime(self, dt_value):
-        """
-        Chuyển datetime từ DB về datetime object an toàn
-        """
         if isinstance(dt_value, datetime):
             return dt_value
-
         if isinstance(dt_value, str):
             try:
-                # SQLite format thường là: 'YYYY-MM-DD HH:MM:SS'
                 return datetime.fromisoformat(dt_value)
             except Exception:
                 return None
-
         return None
 
     # ===============================
-    # REFUND PROCESS (CHUẨN TÀI CHÍNH)
+    # REFUND PROCESS
     # ===============================
 
     def process_refund(self, admin_id, booking_id, reason):
@@ -72,40 +67,32 @@ class RefundLogic:
             return False, "Không tìm thấy booking."
 
         if booking["status"] != self.VALID_BOOKING_STATUS_FOR_REFUND:
-            return False, "Chỉ hoàn tiền cho booking đã thanh toán (PAID)."
+            return False, "Chỉ hoàn tiền cho booking đã thanh toán (Confirmed)."
 
         # 2️⃣ Kiểm tra payment
         payment = self._get_payment(booking_id)
         if not payment:
             return False, "Không tìm thấy thông tin thanh toán."
 
-        if payment["status"] != "COMPLETED":
+        if payment["status"] != "Success":  # Trạng thái payment thành công
             return False, "Chỉ hoàn tiền cho giao dịch đã hoàn tất."
 
         # 3️⃣ Không cho refund 2 lần
         if self._refund_exists(booking_id):
             return False, "Booking này đã được hoàn tiền trước đó."
 
-        # 4️⃣ Kiểm tra thời gian 3 giờ
+        # 4️⃣ Kiểm tra thời gian 3 giờ (nếu cần)
         earliest_time_raw = self._get_earliest_start_time(booking_id)
-        if not earliest_time_raw:
-            return False, "Không tìm thấy chi tiết đặt sân."
-
-        earliest_time = self._parse_datetime(earliest_time_raw)
-        if not earliest_time:
-            return False, "Lỗi định dạng thời gian đặt sân."
-
-        now = datetime.now()
-
-        if earliest_time - now < timedelta(hours=3):
-            return False, "Chỉ được hoàn tiền nếu hủy trước giờ sử dụng ít nhất 3 giờ."
+        if earliest_time_raw:
+            earliest_time = self._parse_datetime(earliest_time_raw)
+            if earliest_time:
+                now = datetime.now()
+                if earliest_time - now < timedelta(hours=3):
+                    return False, "Chỉ được hoàn tiền nếu hủy trước giờ sử dụng ít nhất 3 giờ."
 
         refund_amount = booking["total_amount"]
 
-        # ===============================
-        # 5️⃣ TRANSACTION BẮT BUỘC
-        # ===============================
-
+        # 5. Transaction
         conn = db.get_connection()
         if not conn:
             return False, "Không thể kết nối cơ sở dữ liệu."
@@ -116,36 +103,28 @@ class RefundLogic:
             # Insert Refund record
             cursor.execute(
                 """
-                INSERT INTO Refund
-                (booking_id, refund_amount, refund_date, reason)
+                INSERT INTO Refund (booking_id, refund_amount, refund_date, reason)
                 VALUES (?, ?, ?, ?)
                 """,
-                (booking_id, refund_amount, now, reason)
+                (booking_id, refund_amount, datetime.now(), reason)
             )
 
-            # Update Booking -> CANCELLED
+            # Update Booking -> Cancelled
             cursor.execute(
-                """
-                UPDATE Booking
-                SET status = 'CANCELLED'
-                WHERE booking_id = ?
-                """,
+                "UPDATE Booking SET status = 'Cancelled' WHERE booking_id = ?",
                 (booking_id,)
             )
-
             if cursor.rowcount == 0:
                 raise Exception("Không cập nhật được Booking.")
 
-            # Update Payment -> REFUNDED
+            # Update Payment -> Refunded (có thể thêm trạng thái mới, nếu chưa có thì tạo)
+            # Trong CSDL, Payment status có thể là 'Pending', 'Success', 'Failed'
+            # Ta có thể thêm 'Refunded' vào check constraint, hoặc tạm thời dùng 'Failed'
+            # Tốt nhất nên thêm 'Refunded' vào ràng buộc. Ở đây giả sử đã có 'Refunded'.
             cursor.execute(
-                """
-                UPDATE Payment
-                SET status = 'REFUNDED'
-                WHERE booking_id = ?
-                """,
+                "UPDATE Payment SET status = 'Refunded' WHERE booking_id = ?",
                 (booking_id,)
             )
-
             if cursor.rowcount == 0:
                 raise Exception("Không cập nhật được Payment.")
 
@@ -155,14 +134,10 @@ class RefundLogic:
             conn.rollback()
             conn.close()
             return False, f"Lỗi hệ thống: {e}"
-
         finally:
             conn.close()
 
-        # ===============================
-        # 6️⃣ GHI LOG (KHÔNG ẢNH HƯỞNG NGHIỆP VỤ)
-        # ===============================
-
+        # Ghi log
         self.logger.log_action(
             admin_id=admin_id,
             action_type="REFUND",

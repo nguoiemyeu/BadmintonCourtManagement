@@ -97,15 +97,11 @@ class AddBookingDialog(QDialog):
 
     def load_customers(self):
         """Load danh sách khách hàng vào combobox"""
-        # Giả sử có method get_all_customers trong admin_logic (cần thêm nếu chưa có)
-        customers = self.admin_logic.get_all_customers()  # Tạm thời dùng method có sẵn?
-        # Nếu chưa có, ta có thể tự viết query:
-        # from shared.database.db_manager import db
-        # customers = db.fetch_all("SELECT customer_id, full_name, phone_number FROM Customer ORDER BY full_name")
-        # Tôi sẽ giả sử đã có method này.
+        customers = self.admin_logic.get_all_customers()  # Lấy tất cả khách hàng
         self.cmb_customer.clear()
         self.cmb_customer.addItem("-- Chọn khách hàng --", None)
         for c in customers:
+            # Hiển thị tên và số điện thoại, lưu customer_id làm data
             self.cmb_customer.addItem(f"{c['full_name']} - {c['phone_number']}", c['customer_id'])
 
     def load_courts(self):
@@ -296,6 +292,7 @@ class AddBookingDialog(QDialog):
         self.lbl_final.setText(f"Thanh toán: {final:,.0f} đ")
 
     def create_new_customer(self):
+        """Mở dialog thêm khách hàng mới"""
         from PyQt6.QtWidgets import QInputDialog
         name, ok1 = QInputDialog.getText(self, "Khách mới", "Nhập họ tên khách hàng:")
         if not ok1 or not name.strip():
@@ -304,15 +301,17 @@ class AddBookingDialog(QDialog):
         if not ok2 or not phone.strip():
             return
 
-        success, message = self.admin_logic.add_customer(name.strip(), phone.strip())
+        # Gọi method thêm khách hàng (trả về success, message, new_id)
+        success, message, new_id = self.admin_logic.add_customer(name.strip(), phone.strip())
         if success:
             QMessageBox.information(self, "Thành công", "Đã thêm khách hàng mới.")
-            self.load_customers()
-            # Cập nhật dashboard nếu parent là MainAdminView
-            if self.parent() and hasattr(self.parent(), 'load_dashboard_data'):
-                self.parent().load_dashboard_data()
-            # Chọn khách vừa thêm (tìm cách)
-            self.cmb_customer.setCurrentIndex(self.cmb_customer.count() - 1)
+            self.load_customers()  # Refresh combobox
+            # Chọn khách vừa thêm nếu tìm thấy
+            if new_id:
+                for i in range(self.cmb_customer.count()):
+                    if self.cmb_customer.itemData(i) == new_id:
+                        self.cmb_customer.setCurrentIndex(i)
+                        break
         else:
             QMessageBox.critical(self, "Lỗi", message)
 

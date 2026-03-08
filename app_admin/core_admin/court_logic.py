@@ -182,30 +182,22 @@ class CourtLogic:
         return result and result["total"] > 0
 
     def update_court_status_based_on_bookings(self, court_id):
-        """
-        Cập nhật trạng thái court dựa trên các booking_detail hiện tại.
-        Nếu có ít nhất một booking_detail với booking có status 'Pending' hoặc 'Confirmed'
-        thì court ở trạng thái 'Booked', ngược lại là 'Available'.
-        (Không tự động chuyển từ Maintenance)
-        """
-        # Lấy trạng thái hiện tại
         court = self.get_court_by_id(court_id)
         if not court:
             return False, "Không tìm thấy sân"
-
-        # Nếu đang Maintenance thì không tự động thay đổi
         if court['status'] == 'Maintenance':
-            return True, "Sân đang bảo trì, giữ nguyên"
+            return True, "Sân đang bảo trì"
 
-        # Kiểm tra booking đang hoạt động
+        now = datetime.now()
         query = """
                 SELECT COUNT(*) as total
                 FROM Booking_Detail bd
                          JOIN Booking b ON bd.booking_id = b.booking_id
                 WHERE bd.court_id = ? \
                   AND b.status IN ('Pending', 'Confirmed') \
+                  AND bd.end_time > ? \
                 """
-        result = db.fetch_one(query, (court_id,))
+        result = db.fetch_one(query, (court_id, now))
         has_active = result and result['total'] > 0
 
         new_status = 'Booked' if has_active else 'Available'
@@ -215,7 +207,7 @@ class CourtLogic:
                 (new_status, court_id)
             )
             if success:
-                return True, f"Cập nhật trạng thái sân thành {new_status}"
+                return True, f"Cập nhật thành {new_status}"
             else:
                 return False, "Lỗi cập nhật"
         return True, "Không thay đổi"

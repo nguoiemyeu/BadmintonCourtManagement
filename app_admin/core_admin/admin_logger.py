@@ -1,7 +1,6 @@
 from shared.database.db_manager import db
 from datetime import datetime
 
-
 class AdminLogger:
     """
     Ghi nhận thao tác của Admin vào bảng Admin_log
@@ -19,13 +18,12 @@ class AdminLogger:
         result = db.fetch_one(query, (admin_id,))
         return result and result["total"] > 0
 
-    def log_action(self, admin_id, action_type, target_table,
-                   target_id=None, reason=None):
+    def log_action(self, admin_id, action_type, target_table, target_id, reason=None):
         """
-        Ghi một bản ghi vào Admin_log
+        Ghi một bản ghi vào Admin_log.
+        Yêu cầu: target_id phải là số nguyên (không được để trống).
         Trả về: (success: bool, message: str)
         """
-
         # 1️⃣ Validate admin
         if not self._admin_exists(admin_id):
             return False, "Admin không tồn tại."
@@ -34,8 +32,11 @@ class AdminLogger:
         if action_type not in self.VALID_ACTION_TYPES:
             return False, f"Action type '{action_type}' không hợp lệ."
 
+        # 3️⃣ Đảm bảo target_id là số nguyên (không None)
+        if target_id is None:
+            return False, "target_id không được để trống."
+
         created_at = datetime.now()
-        formatted_target_id = str(target_id) if target_id is not None else None
 
         query = """
             INSERT INTO Admin_log
@@ -46,8 +47,7 @@ class AdminLogger:
         try:
             success = db.execute_query(
                 query,
-                (admin_id, action_type, target_table,
-                 formatted_target_id, reason, created_at)
+                (admin_id, action_type, target_table, target_id, reason, created_at)
             )
 
             if not success:
@@ -62,7 +62,7 @@ class AdminLogger:
 
     @staticmethod
     def get_logs_by_admin(admin_id):
-        """Lấy lịch sử hoạt động của 1 Admin cụ thể"""
+        """Lấy lịch sử hoạt động của một Admin cụ thể"""
         query = """
             SELECT *
             FROM Admin_log
@@ -73,7 +73,7 @@ class AdminLogger:
 
     @staticmethod
     def get_all_logs():
-        """Lấy toàn bộ lịch sử hoạt động"""
+        """Lấy toàn bộ lịch sử hoạt động kèm tên Admin"""
         query = """
             SELECT AL.*, A.full_name
             FROM Admin_log AL

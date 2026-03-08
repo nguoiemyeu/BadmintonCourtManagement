@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>7</number>
     </property>
     <widget class="QWidget" name="Trangchu">
      <widget class="QWidget" name="gridLayoutWidget">
@@ -634,6 +634,27 @@
        <item row="7" column="1">
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
+          <widget class="QPushButton" name="pushButton_themkh">
+           <property name="text">
+            <string>Thêm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_xoakh">
+           <property name="text">
+            <string>Xóa</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_chinh_sua">
+           <property name="text">
+            <string>Chỉnh sửa</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="pushButton_xemct_2">
            <property name="text">
             <string>Xem chi tiết</string>
@@ -778,7 +799,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Khách hành nhanh</string>
+             <string>Khách hàng nhanh</string>
             </property>
            </item>
           </widget>
@@ -819,27 +840,6 @@
           <widget class="QPushButton" name="pushButton_themkm">
            <property name="text">
             <string>Thêm</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_xoakm">
-           <property name="text">
-            <string>Xóa</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_suakm">
-           <property name="text">
-            <string>Sửa</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_battatkm">
-           <property name="text">
-            <string>Kích hoạt</string>
            </property>
           </widget>
          </item>
@@ -956,87 +956,6 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QTabWidget" name="tabWidget">
-         <property name="currentIndex">
-          <number>2</number>
-         </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Tab 1</string>
-          </attribute>
-          <widget class="QWidget" name="gridLayoutWidget_7">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>1191</width>
-             <height>611</height>
-            </rect>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_7">
-            <item row="1" column="0">
-             <widget class="QTableWidget" name="tableWidget_5"/>
-            </item>
-            <item row="2" column="1">
-             <widget class="QPushButton" name="pushButton_xacnhantt">
-              <property name="text">
-               <string>Xác nhận thanh toán</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="tab_3">
-          <attribute name="title">
-           <string>Page</string>
-          </attribute>
-          <widget class="QWidget" name="gridLayoutWidget_9">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>1191</width>
-             <height>611</height>
-            </rect>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_9">
-            <item row="0" column="0">
-             <widget class="QTableWidget" name="tableWidget_7"/>
-            </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_taohoantien">
-              <property name="text">
-               <string>Tạo hoàn tiền</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Tab 2</string>
-          </attribute>
-          <widget class="QWidget" name="gridLayoutWidget_8">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>1191</width>
-             <height>611</height>
-            </rect>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_8">
-            <item row="0" column="0">
-             <widget class="QTableWidget" name="tableWidget_6"/>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-        </widget>
-       </item>
        <item row="3" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_13">
          <item>
@@ -1096,6 +1015,87 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="5" column="0">
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Tab 1</string>
+          </attribute>
+          <widget class="QWidget" name="gridLayoutWidget_7">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>1191</width>
+             <height>611</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="1" column="0">
+             <widget class="QTableWidget" name="tableWidget_5"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="pushButton_xacnhantt">
+              <property name="text">
+               <string>Xác nhận thanh toán</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_3">
+          <attribute name="title">
+           <string>Page</string>
+          </attribute>
+          <widget class="QWidget" name="gridLayoutWidget_9">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>1191</width>
+             <height>611</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="0" column="0">
+             <widget class="QTableWidget" name="tableWidget_7"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="pushButton_taohoantien">
+              <property name="text">
+               <string>Tạo hoàn tiền</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Tab 2</string>
+          </attribute>
+          <widget class="QWidget" name="gridLayoutWidget_8">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>1191</width>
+             <height>611</height>
+            </rect>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_8">
+            <item row="0" column="0">
+             <widget class="QTableWidget" name="tableWidget_6"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1198,15 +1198,12 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="pushButton_2_xuatfile">
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_23">
          <property name="text">
-          <string>Xuất Excel</string>
+          <string>Nhật ký hệ thống</string>
          </property>
         </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QTableWidget" name="tableWidget_9"/>
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_11">
@@ -1215,12 +1212,8 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_23">
-         <property name="text">
-          <string>Nhật ký hệ thống</string>
-         </property>
-        </widget>
+       <item row="4" column="0">
+        <widget class="QTableWidget" name="tableWidget_9"/>
        </item>
       </layout>
      </widget>
@@ -1357,13 +1350,6 @@
          </item>
          <item row="3" column="3">
           <widget class="QLineEdit" name="lineEdit_tendangnhap"/>
-         </item>
-         <item row="3" column="4">
-          <widget class="QPushButton" name="pushButton_doimk">
-           <property name="text">
-            <string>Đổi mật khẩu</string>
-           </property>
-          </widget>
          </item>
          <item row="4" column="4">
           <widget class="QPushButton" name="pushButton_dangxuat">
