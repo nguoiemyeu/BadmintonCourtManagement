@@ -125,7 +125,7 @@ ALTER TABLE BOOKING ADD CONSTRAINT check_booking_status
 CHECK (status IN ('Pending', 'Confirmed', 'Cancelled', 'Completed'));
 
 ALTER TABLE PAYMENT ADD CONSTRAINT check_payment_status 
-CHECK (status IN ('Pending', 'Success', 'Failed'));
+CHECK (status IN ('Pending', 'Success', 'Failed', 'Refunded'));
 
 ALTER TABLE MEMBER ADD CONSTRAINT check_member_status 
 CHECK (status IN ('Active', 'Inactive'));

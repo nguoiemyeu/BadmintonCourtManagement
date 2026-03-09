@@ -792,3 +792,18 @@ class AdminLogic:
         """Lấy thông tin chi tiết của admin theo ID"""
         query = "SELECT admin_id, full_name, username, role FROM Admin WHERE admin_id = ?"
         return db.fetch_one(query, (admin_id,))
+
+    def login_admin(self, username, password):
+        """
+        Đăng nhập cho admin.
+        Trả về: (success, message, admin_id, full_name, role)
+        """
+        admin = db.fetch_one("SELECT * FROM Admin WHERE username = ?", (username,))
+        if not admin:
+            return False, "Tên đăng nhập không tồn tại.", None, None, None
+        # So sánh mật khẩu (trong demo dùng plain text, thực tế nên hash)
+        if admin['password_hash'] != password:
+            return False, "Sai mật khẩu.", None, None, None
+        if admin['status'] != 'Active':
+            return False, "Tài khoản đã bị khóa.", None, None, None
+        return True, "Đăng nhập thành công.", admin['admin_id'], admin['full_name'], admin['role']
